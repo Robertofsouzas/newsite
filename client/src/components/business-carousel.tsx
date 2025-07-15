@@ -13,8 +13,8 @@ export default function BusinessCarousel() {
       description: "Criamos painéis visuais com Power BI para análise de dados em tempo real e tomada de decisões estratégicas."
     },
     {
-      image: "https://images.unsplash.com/photo-1666875753105-c63a6f3bdc86?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&h=600",
-      alt: "Tela de automação com workflow visual e nós conectados",
+      image: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&h=600",
+      alt: "Diagrama de conexões e fluxo de trabalho com múltiplos nós",
       title: "Workflows Automatizados", 
       description: "Desenvolvemos fluxos de trabalho com N8N para automatizar processos repetitivos e aumentar produtividade."
     },
