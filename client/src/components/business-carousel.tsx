@@ -7,20 +7,28 @@ export default function BusinessCarousel() {
 
   const slides = [
     {
+      image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&h=600",
+      alt: "Dashboard com gráficos dinâmicos e análise de dados em tempo real",
+      title: "Dashboards Interativos",
+      description: "Criamos painéis visuais com Power BI para análise de dados em tempo real e tomada de decisões estratégicas."
+    },
+    {
+      image: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&h=600",
+      alt: "Workflow de automação e integração de sistemas empresariais",
+      title: "Workflows Automatizados",
+      description: "Desenvolvemos fluxos de trabalho com N8N para automatizar processos repetitivos e aumentar produtividade."
+    },
+    {
+      image: "https://images.unsplash.com/photo-1677442136019-21780ecad995?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&h=600",
+      alt: "Inteligência artificial e machine learning em ação",
+      title: "Agentes de IA",
+      description: "Implementamos agentes inteligentes que aprendem e tomam decisões autônomas para otimizar seus resultados."
+    },
+    {
       image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&h=600",
-      alt: "Data analytics workspace",
-    },
-    {
-      image: "https://images.unsplash.com/photo-1518186285589-2f7649de83e0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&h=600",
-      alt: "Business automation technology",
-    },
-    {
-      image: "https://images.unsplash.com/photo-1555949963-aa79dcee981c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&h=600",
-      alt: "AI development environment",
-    },
-    {
-      image: "https://images.unsplash.com/photo-1497366216548-37526070297c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&h=600",
-      alt: "Modern collaborative workspace",
+      alt: "Integração de sistemas e APIs conectando múltiplas plataformas",
+      title: "Integração de Sistemas",
+      description: "Conectamos diferentes plataformas e sistemas para criar um ecossistema digital unificado e eficiente."
     },
   ];
 
@@ -60,12 +68,18 @@ export default function BusinessCarousel() {
               style={{ transform: `translateX(-${currentSlide * 100}%)` }}
             >
               {slides.map((slide, index) => (
-                <div key={index} className="w-full flex-shrink-0">
+                <div key={index} className="w-full flex-shrink-0 relative">
                   <img
                     src={slide.image}
                     alt={slide.alt}
                     className="w-full h-96 object-cover"
                   />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent flex items-end">
+                    <div className="p-8 text-white">
+                      <h3 className="text-2xl font-bold mb-2">{slide.title}</h3>
+                      <p className="text-white/90 max-w-2xl">{slide.description}</p>
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>
