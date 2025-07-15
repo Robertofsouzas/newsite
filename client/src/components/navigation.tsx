@@ -41,7 +41,7 @@ export default function Navigation() {
             <img 
               src={logoPath} 
               alt="RFSTechs Logo" 
-              className="h-10 w-10"
+              className="h-12 w-12"
             />
             <div className={`text-2xl font-bold transition-colors ${
               isScrolled ? "text-primary" : "text-white"

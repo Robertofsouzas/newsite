@@ -18,7 +18,7 @@ export default function Footer() {
               <img 
                 src={logoPath} 
                 alt="RFSTechs Logo" 
-                className="h-10 w-10"
+                className="h-12 w-12"
               />
               <div className="text-2xl font-bold">RFSTechs</div>
             </div>
