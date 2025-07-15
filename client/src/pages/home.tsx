@@ -5,6 +5,7 @@ import AIBenefitsSection from "@/components/ai-benefits-section";
 import PortfolioSection from "@/components/portfolio-section";
 import BusinessCarousel from "@/components/business-carousel";
 import AboutSection from "@/components/about-section";
+import TestimonialsSection from "@/components/testimonials-section";
 import ContactSection from "@/components/contact-section";
 import Footer from "@/components/footer";
 
@@ -18,6 +19,7 @@ export default function Home() {
       <PortfolioSection />
       <BusinessCarousel />
       <AboutSection />
+      <TestimonialsSection />
       <ContactSection />
       <Footer />
     </div>

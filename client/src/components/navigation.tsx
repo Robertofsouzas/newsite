@@ -27,6 +27,7 @@ export default function Navigation() {
     { label: "Serviços", id: "services" },
     { label: "Portfólio", id: "portfolio" },
     { label: "Sobre", id: "about" },
+    { label: "Depoimentos", id: "testimonials" },
   ];
 
   return (
