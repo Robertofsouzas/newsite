@@ -2,11 +2,21 @@
 
 ## Overview
 
-This is a modern business website for RFSTechs, a consulting company specializing in data analytics, business automation, and artificial intelligence solutions. The application is built as a full-stack solution with a React frontend and Express backend, featuring a portfolio showcase, service descriptions, and contact form functionality.
+This is a modern business website for RFSTechs, a consulting company specializing in data analytics, business automation, and AI agents solutions. The application is built as a full-stack solution with a React frontend and Express backend, featuring a portfolio showcase, service descriptions, AI benefits section, and contact form functionality.
 
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
+
+## Recent Changes (January 2025)
+
+- ✓ Updated all "Inteligência Artificial" references to "Agentes de IA" throughout the site
+- ✓ Created dedicated AI Benefits section highlighting advantages of AI agents
+- ✓ Enhanced service descriptions to emphasize intelligent automation and autonomous decisions
+- ✓ Added compelling statistics showing business impact (40% productivity, 60% cost reduction, 80% customer satisfaction)
+- ✓ Updated portfolio project to showcase "Agente de IA Preditivo" with smart inventory optimization
+- ✓ Fixed storage typing error for company field handling
+- ✓ Maintained professional, minimalist design with blue color palette (#203f77)
 
 ## System Architecture
 
