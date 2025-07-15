@@ -13,14 +13,14 @@ export default function BusinessCarousel() {
       description: "Criamos painéis visuais com Power BI para análise de dados em tempo real e tomada de decisões estratégicas."
     },
     {
-      image: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&h=600",
-      alt: "Workflow de automação e integração de sistemas empresariais",
+      image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&h=600",
+      alt: "Rede de conexões digitais e automação de processos empresariais",
       title: "Workflows Automatizados",
       description: "Desenvolvemos fluxos de trabalho com N8N para automatizar processos repetitivos e aumentar produtividade."
     },
     {
-      image: "https://images.unsplash.com/photo-1677442136019-21780ecad995?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&h=600",
-      alt: "Inteligência artificial e machine learning em ação",
+      image: "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&h=600",
+      alt: "Robô inteligente com inteligência artificial avançada",
       title: "Agentes de IA",
       description: "Implementamos agentes inteligentes que aprendem e tomam decisões autônomas para otimizar seus resultados."
     },
