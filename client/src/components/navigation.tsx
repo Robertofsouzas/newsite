@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Menu } from "lucide-react";
+import logoPath from "@assets/image_1752623082399.png";
 
 export default function Navigation() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -36,7 +37,12 @@ export default function Navigation() {
     }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          <div className="flex items-center">
+          <div className="flex items-center space-x-3">
+            <img 
+              src={logoPath} 
+              alt="RFSTechs Logo" 
+              className="h-8 w-8"
+            />
             <div className={`text-2xl font-bold transition-colors ${
               isScrolled ? "text-primary" : "text-white"
             }`}>
