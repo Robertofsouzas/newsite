@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { BarChart3, GitBranch, PieChart, Bot, Brain, Puzzle, ArrowRight } from "lucide-react";
 
 export default function PortfolioSection() {
-  const projects = [
+  const powerBIProjects = [
     {
       icon: BarChart3,
       title: "Dashboard de Vendas",
@@ -14,14 +14,6 @@ export default function PortfolioSection() {
       gradient: "from-primary to-secondary",
     },
     {
-      icon: GitBranch,
-      title: "Automação de CRM",
-      description: "Workflow automatizado para captura de leads, nutrição e integração com sistema de vendas.",
-      badge: "N8N",
-      badgeColor: "bg-secondary text-secondary-foreground",
-      gradient: "from-secondary to-accent",
-    },
-    {
       icon: PieChart,
       title: "Análise Financeira",
       description: "Dashboard financeiro com controle de custos, análise de rentabilidade e fluxo de caixa.",
@@ -29,13 +21,16 @@ export default function PortfolioSection() {
       badgeColor: "bg-primary text-primary-foreground",
       gradient: "from-accent to-primary",
     },
+  ];
+
+  const otherProjects = [
     {
-      icon: Bot,
-      title: "Bot de Atendimento",
-      description: "Chatbot inteligente para atendimento inicial e direcionamento de clientes.",
+      icon: GitBranch,
+      title: "Automação de CRM",
+      description: "Workflow automatizado para captura de leads, nutrição e integração com sistema de vendas.",
       badge: "N8N",
       badgeColor: "bg-secondary text-secondary-foreground",
-      gradient: "from-primary to-accent",
+      gradient: "from-secondary to-accent",
     },
     {
       icon: Brain,
@@ -67,41 +62,90 @@ export default function PortfolioSection() {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {projects.map((project, index) => {
-            const Icon = project.icon;
-            return (
-              <Card
-                key={project.title}
-                className="overflow-hidden hover:shadow-lg transition-all duration-300 animate-slide-up border-0 bg-muted/30"
-                style={{ animationDelay: `${index * 0.1}s` }}
-              >
-                <div className={`h-48 bg-gradient-to-br ${project.gradient} flex items-center justify-center`}>
-                  <Icon className="h-12 w-12 text-white" />
-                </div>
-                <CardContent className="p-6">
-                  <div className="flex items-center mb-3">
-                    <Badge className={project.badgeColor}>
-                      {project.badge}
-                    </Badge>
+        {/* Power BI Projects */}
+        <div className="mb-12">
+          <h3 className="text-2xl font-semibold text-foreground mb-8 text-center">
+            Dashboards Power BI
+          </h3>
+          <div className="grid md:grid-cols-2 gap-8 justify-center">
+            {powerBIProjects.map((project, index) => {
+              const Icon = project.icon;
+              return (
+                <Card
+                  key={project.title}
+                  className="overflow-hidden hover:shadow-lg transition-all duration-300 animate-slide-up border-0 bg-muted/30"
+                  style={{ animationDelay: `${index * 0.1}s` }}
+                >
+                  <div className={`h-48 bg-gradient-to-br ${project.gradient} flex items-center justify-center`}>
+                    <Icon className="h-12 w-12 text-white" />
                   </div>
-                  <h3 className="text-xl font-semibold text-foreground mb-3">
-                    {project.title}
-                  </h3>
-                  <p className="text-muted-foreground mb-4">
-                    {project.description}
-                  </p>
-                  <Button
-                    variant="link"
-                    className="p-0 h-auto font-medium text-primary hover:text-primary/80"
-                  >
-                    Ver Projeto
-                    <ArrowRight className="ml-1 h-4 w-4" />
-                  </Button>
-                </CardContent>
-              </Card>
-            );
-          })}
+                  <CardContent className="p-6">
+                    <div className="flex items-center mb-3">
+                      <Badge className={project.badgeColor}>
+                        {project.badge}
+                      </Badge>
+                    </div>
+                    <h3 className="text-xl font-semibold text-foreground mb-3">
+                      {project.title}
+                    </h3>
+                    <p className="text-muted-foreground mb-4">
+                      {project.description}
+                    </p>
+                    <Button
+                      variant="link"
+                      className="p-0 h-auto font-medium text-primary hover:text-primary/80"
+                    >
+                      Ver Projeto
+                      <ArrowRight className="ml-1 h-4 w-4" />
+                    </Button>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Other Projects */}
+        <div>
+          <h3 className="text-2xl font-semibold text-foreground mb-8 text-center">
+            Automação & Inteligência Artificial
+          </h3>
+          <div className="grid md:grid-cols-3 gap-8">
+            {otherProjects.map((project, index) => {
+              const Icon = project.icon;
+              return (
+                <Card
+                  key={project.title}
+                  className="overflow-hidden hover:shadow-lg transition-all duration-300 animate-slide-up border-0 bg-muted/30"
+                  style={{ animationDelay: `${(index + 2) * 0.1}s` }}
+                >
+                  <div className={`h-48 bg-gradient-to-br ${project.gradient} flex items-center justify-center`}>
+                    <Icon className="h-12 w-12 text-white" />
+                  </div>
+                  <CardContent className="p-6">
+                    <div className="flex items-center mb-3">
+                      <Badge className={project.badgeColor}>
+                        {project.badge}
+                      </Badge>
+                    </div>
+                    <h3 className="text-xl font-semibold text-foreground mb-3">
+                      {project.title}
+                    </h3>
+                    <p className="text-muted-foreground mb-4">
+                      {project.description}
+                    </p>
+                    <Button
+                      variant="link"
+                      className="p-0 h-auto font-medium text-primary hover:text-primary/80"
+                    >
+                      Ver Projeto
+                      <ArrowRight className="ml-1 h-4 w-4" />
+                    </Button>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
         </div>
       </div>
     </section>
