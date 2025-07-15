@@ -39,9 +39,9 @@ export default function PortfolioSection() {
     },
     {
       icon: Brain,
-      title: "Análise Preditiva",
-      description: "Modelo de machine learning para previsão de demanda e otimização de estoque.",
-      badge: "IA",
+      title: "Agente de IA Preditivo",
+      description: "Agente inteligente que monitora padrões de demanda e otimiza automaticamente níveis de estoque.",
+      badge: "Agente IA",
       badgeColor: "bg-accent text-accent-foreground",
       gradient: "from-secondary to-primary",
     },

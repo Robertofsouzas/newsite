@@ -29,7 +29,7 @@ export default function HeroSection() {
             <span className="text-accent">Resultados</span>
           </h1>
           <p className="text-xl md:text-2xl mb-8 leading-relaxed opacity-90">
-            Especialistas em análise de dados, automação e inteligência artificial.
+            Especialistas em análise de dados, automação e agentes de IA.
             Soluções Power BI e N8N que impulsionam seu negócio.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 animate-slide-up">

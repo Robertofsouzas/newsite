@@ -55,7 +55,7 @@ export default function Footer() {
               </li>
               <li>
                 <a href="#" className="hover:text-white transition-colors">
-                  Inteligência Artificial
+                  Agentes de IA
                 </a>
               </li>
               <li>

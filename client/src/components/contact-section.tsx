@@ -170,7 +170,7 @@ export default function ContactSection() {
                     <SelectContent>
                       <SelectItem value="powerbi">Dashboard Power BI</SelectItem>
                       <SelectItem value="n8n">Automação N8N</SelectItem>
-                      <SelectItem value="ia">Inteligência Artificial</SelectItem>
+                      <SelectItem value="ia">Agentes de IA</SelectItem>
                       <SelectItem value="consultoria">Consultoria Geral</SelectItem>
                     </SelectContent>
                   </Select>

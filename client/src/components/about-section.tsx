@@ -35,7 +35,7 @@ export default function AboutSection() {
             <p className="text-lg text-muted-foreground mb-6">
               Somos especialistas em transformar dados em insights valiosos e automatizar processos
               para impulsionar o crescimento dos negócios. Com expertise em Power BI, N8N e
-              soluções de inteligência artificial.
+              agentes de IA que trabalham 24/7 para maximizar seus resultados.
             </p>
             <div className="space-y-4 mb-8">
               {achievements.map((achievement) => (

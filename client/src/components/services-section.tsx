@@ -19,9 +19,9 @@ export default function ServicesSection() {
     },
     {
       icon: Brain,
-      title: "Inteligência Artificial",
-      description: "Implementação de soluções de IA para otimização de processos, análise preditiva e tomada de decisões inteligentes.",
-      features: ["Machine Learning", "Análise Preditiva", "Processamento de Linguagem"],
+      title: "Agentes de IA",
+      description: "Agentes inteligentes que automatizam tarefas complexas, aprendem com dados e tomam decisões autonomamente para maximizar resultados.",
+      features: ["Automação Inteligente", "Aprendizado Contínuo", "Decisões Autônomas"],
       color: "accent",
     },
   ];
