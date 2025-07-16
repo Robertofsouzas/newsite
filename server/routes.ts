@@ -4,7 +4,77 @@ import { storage } from "./storage";
 import { insertContactSchema, insertProjectSchema, updateProjectSchema } from "@shared/schema";
 import { z } from "zod";
 
+// Simple authentication - in production, use proper JWT tokens and password hashing
+const ADMIN_CREDENTIALS = {
+  username: "admin",
+  password: "admin123", // In production, use hashed passwords
+};
+
+// Simple token generation (in production, use proper JWT)
+function generateToken() {
+  return Buffer.from(`${Date.now()}-${Math.random()}`).toString('base64');
+}
+
+// Store active tokens (in production, use Redis or similar)
+const activeTokens = new Set<string>();
+
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Authentication routes
+  app.post("/api/login", async (req, res) => {
+    try {
+      const { username, password } = req.body;
+      
+      if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
+        const token = generateToken();
+        activeTokens.add(token);
+        
+        res.json({ 
+          success: true, 
+          token,
+          message: "Login realizado com sucesso" 
+        });
+      } else {
+        res.status(401).json({ 
+          success: false, 
+          message: "Credenciais inválidas" 
+        });
+      }
+    } catch (error) {
+      res.status(500).json({ 
+        success: false, 
+        message: "Erro interno do servidor" 
+      });
+    }
+  });
+
+  app.post("/api/logout", async (req, res) => {
+    try {
+      const token = req.headers.authorization?.replace('Bearer ', '');
+      if (token) {
+        activeTokens.delete(token);
+      }
+      res.json({ success: true, message: "Logout realizado com sucesso" });
+    } catch (error) {
+      res.status(500).json({ 
+        success: false, 
+        message: "Erro interno do servidor" 
+      });
+    }
+  });
+
+  // Middleware to verify token for protected routes
+  const verifyToken = (req: any, res: any, next: any) => {
+    const token = req.headers.authorization?.replace('Bearer ', '');
+    
+    if (!token || !activeTokens.has(token)) {
+      return res.status(401).json({ 
+        success: false, 
+        message: "Token inválido ou expirado" 
+      });
+    }
+    
+    next();
+  };
   // Contact form submission
   app.post("/api/contact", async (req, res) => {
     try {
@@ -28,7 +98,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Get all contacts (for admin purposes)
-  app.get("/api/contacts", async (req, res) => {
+  app.get("/api/contacts", verifyToken, async (req, res) => {
     try {
       const contacts = await storage.getContacts();
       res.json(contacts);
@@ -42,8 +112,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Project management routes
   
-  // Get all projects
-  app.get("/api/projects", async (req, res) => {
+  // Get all projects (admin only)
+  app.get("/api/projects", verifyToken, async (req, res) => {
     try {
       const projects = await storage.getProjects();
       res.json(projects);
@@ -110,7 +180,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Create new project
-  app.post("/api/projects", async (req, res) => {
+  app.post("/api/projects", verifyToken, async (req, res) => {
     try {
       const projectData = insertProjectSchema.parse(req.body);
       const project = await storage.createProject(projectData);
@@ -132,7 +202,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Update project
-  app.put("/api/projects/:id", async (req, res) => {
+  app.put("/api/projects/:id", verifyToken, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       if (isNaN(id)) {
@@ -170,7 +240,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Delete project
-  app.delete("/api/projects/:id", async (req, res) => {
+  app.delete("/api/projects/:id", verifyToken, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       if (isNaN(id)) {

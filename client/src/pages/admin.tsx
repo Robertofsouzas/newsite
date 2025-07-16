@@ -14,13 +14,27 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { insertProjectSchema, type Project, type InsertProject } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Edit, Trash2, ExternalLink, Eye } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import { useLocation } from "wouter";
+import { Plus, Edit, Trash2, ExternalLink, Eye, LogOut } from "lucide-react";
+import ProtectedRoute from "@/components/ProtectedRoute";
 
-export default function AdminPage() {
+function AdminContent() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingProject, setEditingProject] = useState<Project | null>(null);
   const { toast } = useToast();
+  const { logout } = useAuth();
+  const [, setLocation] = useLocation();
   const queryClient = useQueryClient();
+
+  const handleLogout = () => {
+    logout();
+    toast({
+      title: "Logout realizado",
+      description: "Você foi desconectado com sucesso",
+    });
+    setLocation("/login");
+  };
 
   const { data: projects = [], isLoading } = useQuery({
     queryKey: ["/api/projects"],
@@ -173,13 +187,23 @@ export default function AdminPage() {
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Administração de Projetos
-          </h1>
-          <p className="text-gray-600">
-            Gerencie os projetos exibidos no portfólio do site
-          </p>
+        <div className="mb-8 flex justify-between items-center">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+              Administração de Projetos
+            </h1>
+            <p className="text-gray-600">
+              Gerencie os projetos exibidos no portfólio do site
+            </p>
+          </div>
+          <Button 
+            variant="outline" 
+            onClick={handleLogout}
+            className="flex items-center gap-2"
+          >
+            <LogOut className="w-4 h-4" />
+            Sair
+          </Button>
         </div>
 
         <div className="mb-6">
@@ -458,5 +482,13 @@ export default function AdminPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function AdminPage() {
+  return (
+    <ProtectedRoute>
+      <AdminContent />
+    </ProtectedRoute>
   );
 }
