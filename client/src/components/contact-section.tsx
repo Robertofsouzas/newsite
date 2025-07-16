@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { Mail, Phone, Clock, Loader2 } from "lucide-react";
+import { SiWhatsapp } from "react-icons/si";
 
 export default function ContactSection() {
   const { toast } = useToast();
@@ -64,8 +65,15 @@ export default function ContactSection() {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
+  const handleWhatsAppClick = () => {
+    const phoneNumber = "5511999999999"; // Número do WhatsApp sem símbolos
+    const message = "Olá! Gostaria de saber mais sobre os serviços da RFSTechs.";
+    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+    window.open(whatsappUrl, '_blank');
+  };
+
   return (
-    <section id="contact" className="py-20 bg-muted/30">
+    <section id="contact" className="py-20 bg-muted/30 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16 animate-fade-in">
           <h2 className="text-4xl font-bold text-foreground mb-4">
@@ -208,6 +216,23 @@ export default function ContactSection() {
               </form>
             </CardContent>
           </Card>
+        </div>
+
+        {/* Botão flutuante do WhatsApp */}
+        <div className="fixed bottom-6 right-6 z-50 group">
+          <Button
+            onClick={handleWhatsAppClick}
+            className="w-16 h-16 rounded-full bg-green-500 hover:bg-green-600 text-white shadow-lg hover:shadow-xl transition-all duration-300 animate-bounce"
+            aria-label="Conversar no WhatsApp"
+          >
+            <SiWhatsapp className="w-8 h-8 group-hover:scale-110 transition-transform duration-300" />
+          </Button>
+          
+          {/* Tooltip */}
+          <div className="absolute bottom-20 right-0 bg-gray-800 text-white px-3 py-2 rounded-lg text-sm whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+            Fale conosco no WhatsApp
+            <div className="absolute top-full right-4 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-800"></div>
+          </div>
         </div>
       </div>
     </section>
