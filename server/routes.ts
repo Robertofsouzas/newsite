@@ -182,10 +182,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Create new project
   app.post("/api/projects", verifyToken, async (req, res) => {
     try {
+      console.log("Body recebido:", req.body);
       const projectData = insertProjectSchema.parse(req.body);
+      console.log("ProjectData após parse:", projectData);
       const project = await storage.createProject(projectData);
       res.json({ success: true, project });
     } catch (error) {
+      console.error("Erro ao criar projeto:", error);
       if (error instanceof z.ZodError) {
         res.status(400).json({ 
           success: false, 

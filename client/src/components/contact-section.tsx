@@ -219,7 +219,10 @@ export default function ContactSection() {
         </div>
 
         {/* Botão flutuante do WhatsApp */}
-        <div className="fixed bottom-6 right-6 z-50 group">
+        <div className="fixed bottom-6 right-6 z-50 flex items-center space-x-3 group">
+          <span className="bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg font-semibold text-base hidden sm:inline-block">
+            Fale conosco no Whatsapp!
+          </span>
           <Button
             onClick={handleWhatsAppClick}
             className="w-16 h-16 rounded-full bg-green-500 hover:bg-green-600 text-white shadow-lg hover:shadow-xl transition-all duration-300 animate-bounce"
@@ -227,7 +230,6 @@ export default function ContactSection() {
           >
             <SiWhatsapp className="w-8 h-8 group-hover:scale-110 transition-transform duration-300" />
           </Button>
-          
           {/* Tooltip */}
           <div className="absolute bottom-20 right-0 bg-gray-800 text-white px-3 py-2 rounded-lg text-sm whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
             Fale conosco no WhatsApp
