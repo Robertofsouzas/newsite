@@ -24,9 +24,18 @@ export default function PortfolioSection() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   // Buscar projetos ativos do banco de dados
-  const { data: projects = [], isLoading } = useQuery({
+  const { data: projectsData = [], isLoading } = useQuery({
     queryKey: ["/api/projects/active"],
+    queryFn: async () => {
+      const res = await fetch("/api/projects/active");
+      return res.json();
+    },
   });
+
+  // Garante que projects seja sempre um array
+  const projects = Array.isArray(projectsData)
+    ? projectsData
+    : projectsData.projects || projectsData.data || [];
 
   // Separar projetos por tipo
   const powerBIProjects = projects.filter((project: Project) => project.type === 'powerbi');
