@@ -18,6 +18,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useLocation } from "wouter";
 import { Plus, Edit, Trash2, ExternalLink, Eye, LogOut } from "lucide-react";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import ImageUpload from "@/components/ImageUpload";
 
 function AdminContent() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -41,19 +42,16 @@ function AdminContent() {
   });
 
   const form = useForm<InsertProject>({
-    resolver: zodResolver(insertProjectSchema.extend({
-      technologies: insertProjectSchema.shape.technologies.optional(),
-    })),
+    resolver: zodResolver(insertProjectSchema),
     defaultValues: {
       title: "",
+      slug: "",
       description: "",
+      fullDescription: "",
       type: "powerbi",
-      benefits: "",
-      powerbiUrl: "",
+      embedUrl: "",
       imageUrl: "",
-      technologies: [],
-      isActive: true,
-      featured: false,
+      date: "",
     },
   });
 
@@ -131,17 +129,12 @@ function AdminContent() {
   });
 
   const onSubmit = (data: InsertProject) => {
-    // Convert technologies string to array
     const { id, ...rest } = data as any; // Remove o campo id, se existir
-    const processedData = {
-      ...rest,
-      technologies: data.technologies || [],
-    };
 
     if (editingProject) {
-      updateMutation.mutate({ id: editingProject.id, data: processedData });
+      updateMutation.mutate({ id: editingProject.id, data: rest });
     } else {
-      createMutation.mutate(processedData);
+      createMutation.mutate(rest);
     }
   };
 
@@ -149,19 +142,18 @@ function AdminContent() {
     setEditingProject(project);
     form.reset({
       title: project.title,
-      description: project.description,
-      type: project.type,
-      benefits: project.benefits || "",
-      powerbiUrl: project.powerbiUrl || "",
+      slug: project.slug,
+      description: project.description || "",
+      fullDescription: project.fullDescription || "",
+      type: project.type || "powerbi",
+      embedUrl: project.embedUrl || "",
       imageUrl: project.imageUrl || "",
-      technologies: project.technologies || [],
-      isActive: project.isActive,
-      featured: project.featured,
+      date: project.date || "",
     });
     setIsDialogOpen(true);
   };
 
-  const handleDelete = (id: number) => {
+  const handleDelete = (id: string) => {
     if (confirm("Tem certeza que deseja deletar este projeto?")) {
       deleteMutation.mutate(id);
     }
@@ -281,13 +273,14 @@ function AdminContent() {
 
                   <FormField
                     control={form.control}
-                    name="benefits"
+                    name="fullDescription"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Benefícios</FormLabel>
+                        <FormLabel>Descrição Completa</FormLabel>
                         <FormControl>
                           <Textarea 
-                            placeholder="Liste os benefícios e resultados obtidos..."
+                            placeholder="Descrição detalhada do projeto, benefícios e resultados..."
+                            rows={4}
                             {...field}
                           />
                         </FormControl>
@@ -298,13 +291,47 @@ function AdminContent() {
 
                   <FormField
                     control={form.control}
-                    name="powerbiUrl"
+                    name="slug"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>URL do Power BI (opcional)</FormLabel>
+                        <FormLabel>Slug (URL amigável)</FormLabel>
                         <FormControl>
                           <Input 
-                            placeholder="https://app.powerbi.com/..."
+                            placeholder="projeto-power-bi-vendas"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="date"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Data do Projeto</FormLabel>
+                        <FormControl>
+                          <Input 
+                            type="date"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="embedUrl"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>URL de Embed (Power BI, N8N, etc.)</FormLabel>
+                        <FormControl>
+                          <Input 
+                            placeholder="https://app.powerbi.com/... ou URL do N8N"
                             {...field}
                           />
                         </FormControl>
@@ -318,11 +345,12 @@ function AdminContent() {
                     name="imageUrl"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>URL da Imagem</FormLabel>
+                        <FormLabel>Imagem do Projeto</FormLabel>
                         <FormControl>
-                          <Input 
-                            placeholder="https://images.unsplash.com/..."
-                            {...field}
+                          <ImageUpload
+                            value={field.value}
+                            onChange={field.onChange}
+                            placeholder="Selecione uma imagem para o projeto"
                           />
                         </FormControl>
                         <FormMessage />
@@ -330,49 +358,7 @@ function AdminContent() {
                     )}
                   />
 
-                  <div className="grid grid-cols-2 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="isActive"
-                      render={({ field }) => (
-                        <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                          <div className="space-y-0.5">
-                            <FormLabel className="text-base">Ativo</FormLabel>
-                            <div className="text-sm text-muted-foreground">
-                              Exibir no site público
-                            </div>
-                          </div>
-                          <FormControl>
-                            <Switch
-                              checked={field.value}
-                              onCheckedChange={field.onChange}
-                            />
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
 
-                    <FormField
-                      control={form.control}
-                      name="featured"
-                      render={({ field }) => (
-                        <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                          <div className="space-y-0.5">
-                            <FormLabel className="text-base">Destaque</FormLabel>
-                            <div className="text-sm text-muted-foreground">
-                              Destacar no portfólio
-                            </div>
-                          </div>
-                          <FormControl>
-                            <Switch
-                              checked={field.value}
-                              onCheckedChange={field.onChange}
-                            />
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
-                  </div>
 
                   <div className="flex gap-3 pt-4">
                     <Button 

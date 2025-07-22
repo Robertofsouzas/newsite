@@ -37,7 +37,7 @@ export const contacts = pgTable("contacts", {
 
 // Usando a tabela projects_site existente do usuário
 export const projects = pgTable("projects_site", {
-  id: uuid("id").primaryKey().defaultRandom(),
+  id: uuid("id").primaryKey(),
   title: text("title").notNull(),
   slug: text("slug").notNull().unique(),
   description: text("description"),
@@ -52,7 +52,7 @@ export const projects = pgTable("projects_site", {
 
 // Usando a tabela sobre existente do usuário
 export const sobre = pgTable("sobre", {
-  id: uuid("id").primaryKey().defaultRandom(),
+  id: uuid("id").primaryKey(),
   title: text("title").notNull(),
   description: text("description"),
   paragraphs: jsonb("paragraphs"),

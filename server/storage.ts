@@ -54,9 +54,13 @@ export class DatabaseStorage implements IStorage {
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/(^-|-$)/g, '');
 
+    // Gerar UUID manualmente
+    const id = crypto.randomUUID();
+
     const [project] = await db
       .insert(projects)
       .values({
+        id: id,
         title: insertProject.title,
         slug: slug,
         description: insertProject.description || null,
@@ -133,9 +137,12 @@ export class DatabaseStorage implements IStorage {
 
   // Sobre operations
   async createSobre(insertSobre: InsertSobre): Promise<Sobre> {
+    const id = crypto.randomUUID();
+    
     const [sobreData] = await db
       .insert(sobre)
       .values({
+        id: id,
         title: insertSobre.title,
         description: insertSobre.description || null,
         paragraphs: insertSobre.paragraphs || null,
