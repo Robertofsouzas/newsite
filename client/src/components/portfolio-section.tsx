@@ -39,8 +39,6 @@ export default function PortfolioSection() {
 
   // Separar projetos por tipo
   const powerBIProjects = projects.filter((project: Project) => project.type === 'powerbi');
-  const n8nProjects = projects.filter((project: Project) => project.type === 'n8n');
-  const aiProjects = projects.filter((project: Project) => project.type === 'ai');
 
   // Projetos estáticos para serviços (quando não há projetos específicos no banco)
   const staticServices = [
@@ -317,13 +315,17 @@ export default function PortfolioSection() {
                 {/* Power BI Interactive Link */}
                 {selectedProject.type === 'powerbi' && selectedProject.powerbiUrl && (
                   <div className="border-t pt-6">
-                    <Button
-                      onClick={() => window.open(selectedProject.powerbiUrl, '_blank')}
-                      className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
-                    >
-                      <ExternalLink className="mr-2 h-4 w-4" />
-                      Abrir Dashboard Interativo no Power BI
-                    </Button>
+                    <h4 className="text-lg font-semibold mb-2">Dashboard Interativo</h4>
+                    <div className="w-full" style={{ minHeight: 400 }}>
+                      <iframe
+                        title={selectedProject.title}
+                        width="100%"
+                        height="400"
+                        src={selectedProject.powerbiUrl}
+                        frameBorder="0"
+                        allowFullScreen
+                      ></iframe>
+                    </div>
                   </div>
                 )}
               </div>

@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { insertProjectSchema, type Project, type InsertProject } from "@shared/schema";
+import { insertProjectSchema, type Project, type InsertProject } from "@/shared/schema";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
@@ -36,7 +36,7 @@ function AdminContent() {
     setLocation("/login");
   };
 
-  const { data: projects = [], isLoading } = useQuery({
+  const { data: projects = [] } = useQuery<Project[]>({
     queryKey: ["/api/projects"],
   });
 
@@ -132,8 +132,9 @@ function AdminContent() {
 
   const onSubmit = (data: InsertProject) => {
     // Convert technologies string to array
+    const { id, ...rest } = data as any; // Remove o campo id, se existir
     const processedData = {
-      ...data,
+      ...rest,
       technologies: data.technologies || [],
     };
 
@@ -395,81 +396,7 @@ function AdminContent() {
           </Dialog>
         </div>
 
-        {isLoading ? (
-          <div className="text-center py-8">Carregando projetos...</div>
-        ) : (
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {projects.map((project: Project) => (
-              <Card key={project.id} className="hover:shadow-lg transition-shadow">
-                <CardHeader>
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <CardTitle className="text-lg mb-2">{project.title}</CardTitle>
-                      <div className="flex gap-2 mb-2">
-                        <Badge className={getTypeColor(project.type)}>
-                          {getTypeName(project.type)}
-                        </Badge>
-                        {project.featured && (
-                          <Badge variant="secondary">Destaque</Badge>
-                        )}
-                        {!project.isActive && (
-                          <Badge variant="destructive">Inativo</Badge>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                  {project.imageUrl && (
-                    <img 
-                      src={project.imageUrl} 
-                      alt={project.title}
-                      className="w-full h-40 object-cover rounded-md"
-                    />
-                  )}
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-gray-600 mb-4 line-clamp-3">
-                    {project.description}
-                  </p>
-                  
-                  {project.powerbiUrl && (
-                    <div className="mb-4">
-                      <a 
-                        href={project.powerbiUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center text-sm text-blue-600 hover:text-blue-800"
-                      >
-                        <ExternalLink className="w-4 h-4 mr-1" />
-                        Ver no Power BI
-                      </a>
-                    </div>
-                  )}
-
-                  <div className="flex gap-2">
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => handleEdit(project)}
-                    >
-                      <Edit className="w-4 h-4 mr-1" />
-                      Editar
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="destructive"
-                      onClick={() => handleDelete(project.id)}
-                    >
-                      <Trash2 className="w-4 h-4 mr-1" />
-                      Deletar
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        )}
-
-        {projects.length === 0 && !isLoading && (
+        {projects.length === 0 && (
           <div className="text-center py-12">
             <Eye className="w-12 h-12 mx-auto text-gray-400 mb-4" />
             <h3 className="text-lg font-medium text-gray-900 mb-2">
