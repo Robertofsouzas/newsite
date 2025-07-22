@@ -18,7 +18,6 @@ import { useAuth } from "@/hooks/useAuth";
 import { useLocation } from "wouter";
 import { Plus, Edit, Trash2, ExternalLink, Eye, LogOut } from "lucide-react";
 import ProtectedRoute from "@/components/ProtectedRoute";
-import ImageUpload from "@/components/ImageUpload";
 
 function AdminContent() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -345,12 +344,11 @@ function AdminContent() {
                     name="imageUrl"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Imagem do Projeto</FormLabel>
+                        <FormLabel>URL da Imagem</FormLabel>
                         <FormControl>
-                          <ImageUpload
-                            value={field.value}
-                            onChange={field.onChange}
-                            placeholder="Selecione uma imagem para o projeto"
+                          <Input 
+                            placeholder="https://images.unsplash.com/..."
+                            {...field}
                           />
                         </FormControl>
                         <FormMessage />
