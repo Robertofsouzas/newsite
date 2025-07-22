@@ -154,8 +154,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get project by ID
   app.get("/api/projects/:id", async (req, res) => {
     try {
-      const id = parseInt(req.params.id);
-      if (isNaN(id)) {
+      const id = req.params.id;
+      if (!id) {
         return res.status(400).json({ 
           success: false, 
           message: "ID inválido" 
@@ -207,8 +207,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Update project
   app.put("/api/projects/:id", verifyToken, async (req, res) => {
     try {
-      const id = parseInt(req.params.id);
-      if (isNaN(id)) {
+      const id = req.params.id;
+      if (!id) {
         return res.status(400).json({ 
           success: false, 
           message: "ID inválido" 
@@ -245,8 +245,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Delete project
   app.delete("/api/projects/:id", verifyToken, async (req, res) => {
     try {
-      const id = parseInt(req.params.id);
-      if (isNaN(id)) {
+      const id = req.params.id;
+      if (!id) {
         return res.status(400).json({ 
           success: false, 
           message: "ID inválido" 

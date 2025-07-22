@@ -7,6 +7,8 @@ import {
   boolean,
   jsonb,
   index,
+  uuid,
+  date,
 } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
@@ -22,6 +24,7 @@ export const sessions = pgTable(
   (table) => [index("IDX_session_expire").on(table.expire)],
 );
 
+// Tabela de contatos (mantemos esta para formulário de contato)
 export const contacts = pgTable("contacts", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
@@ -32,17 +35,27 @@ export const contacts = pgTable("contacts", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
-export const projects = pgTable("projects", {
-  id: serial("id").primaryKey(),
-  title: varchar("title", { length: 255 }).notNull(),
-  description: text("description").notNull(),
-  type: varchar("type", { length: 50 }).notNull(), // 'powerbi' | 'n8n' | 'ai'
-  benefits: text("benefits"),
-  powerbiUrl: varchar("powerbi_url", { length: 500 }),
-  imageUrl: varchar("image_url", { length: 500 }),
-  technologies: jsonb("technologies").$type<string[]>(),
-  isActive: boolean("is_active").default(true),
-  featured: boolean("featured").default(false),
+// Usando a tabela projects_site existente do usuário
+export const projects = pgTable("projects_site", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  title: text("title").notNull(),
+  slug: text("slug").notNull().unique(),
+  description: text("description"),
+  fullDescription: text("full_description"),
+  imageUrl: text("image_url"),
+  type: text("type"),
+  date: date("date"),
+  embedUrl: text("embed_url"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Usando a tabela sobre existente do usuário
+export const sobre = pgTable("sobre", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  title: text("title").notNull(),
+  description: text("description"),
+  paragraphs: jsonb("paragraphs"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
@@ -63,8 +76,16 @@ export const updateProjectSchema = createInsertSchema(projects).omit({
   updatedAt: true,
 }).partial();
 
+export const insertSobreSchema = createInsertSchema(sobre).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
 export type InsertContact = z.infer<typeof insertContactSchema>;
 export type Contact = typeof contacts.$inferSelect;
 export type InsertProject = z.infer<typeof insertProjectSchema>;
 export type UpdateProject = z.infer<typeof updateProjectSchema>;
 export type Project = typeof projects.$inferSelect;
+export type InsertSobre = z.infer<typeof insertSobreSchema>;
+export type Sobre = typeof sobre.$inferSelect;
