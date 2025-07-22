@@ -1,5 +1,4 @@
 import { Linkedin, Twitter, Instagram } from "lucide-react";
-import logoPath from "@assets/image_1752623082399.png";
 
 export default function Footer() {
   const scrollToSection = (sectionId: string) => {
@@ -15,11 +14,6 @@ export default function Footer() {
         <div className="grid md:grid-cols-4 gap-8">
           <div className="md:col-span-2">
             <div className="flex items-center space-x-3 mb-4">
-              <img 
-                src={logoPath} 
-                alt="RFSTechs Logo" 
-                className="h-12 w-12"
-              />
               <div className="text-2xl font-bold">RFSTechs</div>
             </div>
             <p className="text-blue-100 mb-6 max-w-md">
