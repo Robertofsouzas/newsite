@@ -8,7 +8,6 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { insertProjectSchema, type Project, type InsertProject } from "@/shared/schema";
@@ -41,19 +40,16 @@ function AdminContent() {
   });
 
   const form = useForm<InsertProject>({
-    resolver: zodResolver(insertProjectSchema.extend({
-      technologies: insertProjectSchema.shape.technologies.optional(),
-    })),
+    resolver: zodResolver(insertProjectSchema),
     defaultValues: {
       title: "",
+      slug: "",
       description: "",
+      fullDescription: "",
       type: "powerbi",
-      benefits: "",
-      powerbiUrl: "",
+      embedUrl: "",
       imageUrl: "",
-      technologies: [],
-      isActive: true,
-      featured: false,
+      date: "",
     },
   });
 
@@ -66,11 +62,12 @@ function AdminContent() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/projects"] });
-      setIsDialogOpen(false);
       form.reset();
+      setIsDialogOpen(false);
+      setEditingProject(null);
       toast({
-        title: "Sucesso",
-        description: "Projeto criado com sucesso!",
+        title: "Projeto criado!",
+        description: "O projeto foi criado com sucesso.",
       });
     },
     onError: () => {
@@ -83,7 +80,7 @@ function AdminContent() {
   });
 
   const updateMutation = useMutation({
-    mutationFn: async ({ id, data }: { id: number; data: Partial<InsertProject> }) => {
+    mutationFn: async ({ id, data }: { id: string; data: InsertProject }) => {
       return await apiRequest(`/api/projects/${id}`, {
         method: "PUT",
         body: JSON.stringify(data),
@@ -91,12 +88,12 @@ function AdminContent() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/projects"] });
+      form.reset();
       setIsDialogOpen(false);
       setEditingProject(null);
-      form.reset();
       toast({
-        title: "Sucesso",
-        description: "Projeto atualizado com sucesso!",
+        title: "Projeto atualizado!",
+        description: "O projeto foi atualizado com sucesso.",
       });
     },
     onError: () => {
@@ -109,7 +106,7 @@ function AdminContent() {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: async (id: number) => {
+    mutationFn: async (id: string) => {
       return await apiRequest(`/api/projects/${id}`, {
         method: "DELETE",
       });
@@ -117,8 +114,8 @@ function AdminContent() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/projects"] });
       toast({
-        title: "Sucesso",
-        description: "Projeto deletado com sucesso!",
+        title: "Projeto deletado!",
+        description: "O projeto foi deletado com sucesso.",
       });
     },
     onError: () => {
@@ -131,17 +128,12 @@ function AdminContent() {
   });
 
   const onSubmit = (data: InsertProject) => {
-    // Convert technologies string to array
-    const { id, ...rest } = data as any; // Remove o campo id, se existir
-    const processedData = {
-      ...rest,
-      technologies: data.technologies || [],
-    };
+    const { id, ...rest } = data as any;
 
     if (editingProject) {
-      updateMutation.mutate({ id: editingProject.id, data: processedData });
+      updateMutation.mutate({ id: editingProject.id, data: rest });
     } else {
-      createMutation.mutate(processedData);
+      createMutation.mutate(rest);
     }
   };
 
@@ -149,76 +141,54 @@ function AdminContent() {
     setEditingProject(project);
     form.reset({
       title: project.title,
-      description: project.description,
-      type: project.type,
-      benefits: project.benefits || "",
-      powerbiUrl: project.powerbiUrl || "",
+      slug: project.slug,
+      description: project.description || "",
+      fullDescription: project.fullDescription || "",
+      type: project.type || "powerbi",
+      embedUrl: project.embedUrl || "",
       imageUrl: project.imageUrl || "",
-      technologies: project.technologies || [],
-      isActive: project.isActive,
-      featured: project.featured,
+      date: project.date || "",
     });
     setIsDialogOpen(true);
   };
 
-  const handleDelete = (id: number) => {
+  const handleDelete = (id: string) => {
     if (confirm("Tem certeza que deseja deletar este projeto?")) {
       deleteMutation.mutate(id);
     }
   };
 
-  const getTypeColor = (type: string) => {
-    switch (type) {
-      case "powerbi": return "bg-blue-100 text-blue-800";
-      case "n8n": return "bg-green-100 text-green-800";
-      case "ai": return "bg-purple-100 text-purple-800";
-      default: return "bg-gray-100 text-gray-800";
-    }
-  };
-
-  const getTypeName = (type: string) => {
-    switch (type) {
-      case "powerbi": return "Power BI";
-      case "n8n": return "N8N";
-      case "ai": return "Agente de IA";
-      default: return type;
-    }
-  };
-
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="mb-8 flex justify-between items-center">
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">
-              Administração de Projetos
-            </h1>
-            <p className="text-gray-600">
-              Gerencie os projetos exibidos no portfólio do site
-            </p>
+            <h1 className="text-3xl font-bold text-gray-900">Painel Administrativo</h1>
+            <p className="text-gray-600">Gerencie seus projetos e conteúdo</p>
           </div>
-          <Button 
-            variant="outline" 
-            onClick={handleLogout}
-            className="flex items-center gap-2"
-          >
-            <LogOut className="w-4 h-4" />
+          <Button onClick={handleLogout} variant="outline">
+            <LogOut className="h-4 w-4 mr-2" />
             Sair
           </Button>
         </div>
 
-        <div className="mb-6">
+        <div className="mb-8">
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
-              <Button onClick={() => { setEditingProject(null); form.reset(); }}>
-                <Plus className="w-4 h-4 mr-2" />
+              <Button
+                onClick={() => {
+                  setEditingProject(null);
+                  form.reset();
+                }}
+              >
+                <Plus className="h-4 w-4 mr-2" />
                 Novo Projeto
               </Button>
             </DialogTrigger>
             <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
               <DialogHeader>
                 <DialogTitle>
-                  {editingProject ? "Editar Projeto" : "Novo Projeto"}
+                  {editingProject ? "Editar Projeto" : "Criar Novo Projeto"}
                 </DialogTitle>
               </DialogHeader>
 
@@ -231,7 +201,10 @@ function AdminContent() {
                       <FormItem>
                         <FormLabel>Título do Projeto</FormLabel>
                         <FormControl>
-                          <Input placeholder="Ex: Dashboard de Vendas" {...field} />
+                          <Input 
+                            placeholder="Ex: Dashboard de Vendas 2024"
+                            {...field}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -243,11 +216,10 @@ function AdminContent() {
                     name="description"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Descrição</FormLabel>
+                        <FormLabel>Descrição Breve</FormLabel>
                         <FormControl>
                           <Textarea 
-                            placeholder="Descreva o projeto detalhadamente..."
-                            className="min-h-[100px]"
+                            placeholder="Descrição resumida do projeto..."
                             {...field}
                           />
                         </FormControl>
@@ -281,13 +253,14 @@ function AdminContent() {
 
                   <FormField
                     control={form.control}
-                    name="benefits"
+                    name="fullDescription"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Benefícios</FormLabel>
+                        <FormLabel>Descrição Completa</FormLabel>
                         <FormControl>
                           <Textarea 
-                            placeholder="Liste os benefícios e resultados obtidos..."
+                            placeholder="Descrição detalhada do projeto, benefícios e resultados..."
+                            rows={4}
                             {...field}
                           />
                         </FormControl>
@@ -298,13 +271,13 @@ function AdminContent() {
 
                   <FormField
                     control={form.control}
-                    name="powerbiUrl"
+                    name="slug"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>URL do Power BI (opcional)</FormLabel>
+                        <FormLabel>Slug (URL amigável)</FormLabel>
                         <FormControl>
                           <Input 
-                            placeholder="https://app.powerbi.com/..."
+                            placeholder="projeto-power-bi-vendas"
                             {...field}
                           />
                         </FormControl>
@@ -315,64 +288,144 @@ function AdminContent() {
 
                   <FormField
                     control={form.control}
+                    name="date"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Data do Projeto</FormLabel>
+                        <FormControl>
+                          <Input 
+                            type="date"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                    <FormField
+                      control={form.control}
+                    name="embedUrl"
+                      render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>URL de Embed (Power BI, N8N, etc.)</FormLabel>
+                          <FormControl>
+                          <Input 
+                            placeholder="https://app.powerbi.com/... ou URL do N8N"
+                            {...field}
+                            />
+                          </FormControl>
+                        <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
                     name="imageUrl"
-                    render={({ field }) => (
+                      render={({ field }) => (
                       <FormItem>
-                        <FormLabel>URL da Imagem</FormLabel>
+                        <FormLabel>Imagem do Projeto</FormLabel>
                         <FormControl>
-                          <Input 
-                            placeholder="https://images.unsplash.com/..."
-                            {...field}
-                          />
-                        </FormControl>
+                          <div className="space-y-2">
+                            <div className="flex gap-2">
+                              <Input 
+                                placeholder="URL da imagem ou clique em Escolher"
+                                {...field}
+                                className="flex-1"
+                              />
+                              <Button 
+                                type="button" 
+                                variant="outline"
+                                size="sm"
+                                onClick={() => {
+                                  const imageOptions = [
+                                    {
+                                      name: 'Power BI - Dashboard Analytics',
+                                      url: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=400&fit=crop'
+                                    },
+                                    {
+                                      name: 'Power BI - Business Data',
+                                      url: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&h=400&fit=crop'
+                                    },
+                                    {
+                                      name: 'Power BI - Data Visualization',
+                                      url: 'https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=800&h=400&fit=crop'
+                                    },
+                                    {
+                                      name: 'N8N - Automation Network',
+                                      url: 'https://images.unsplash.com/photo-1518186285589-2f7649de83e0?w=800&h=400&fit=crop'
+                                    },
+                                    {
+                                      name: 'N8N - Process Automation',
+                                      url: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=800&h=400&fit=crop'
+                                    },
+                                    {
+                                      name: 'N8N - Workflow Integration',
+                                      url: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800&h=400&fit=crop'
+                                    },
+                                    {
+                                      name: 'AI - Artificial Intelligence',
+                                      url: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&h=400&fit=crop'
+                                    },
+                                    {
+                                      name: 'AI - Machine Learning',
+                                      url: 'https://images.unsplash.com/photo-1488229297570-58520851e868?w=800&h=400&fit=crop'
+                                    },
+                                    {
+                                      name: 'AI - Neural Networks',
+                                      url: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=800&h=400&fit=crop'
+                                    }
+                                  ];
+                                  
+                                  const optionsText = imageOptions.map((img, index) => 
+                                    `${index + 1} - ${img.name}`
+                                  ).join('\n');
+                                  
+                                  const selection = prompt(
+                                    `Escolha uma imagem:\n\n${optionsText}\n\nOu digite a URL personalizada:`,
+                                    '1'
+                                  );
+                                  
+                                  if (selection) {
+                                    const num = parseInt(selection);
+                                    if (num >= 1 && num <= imageOptions.length) {
+                                      field.onChange(imageOptions[num - 1].url);
+                                    } else if (selection.startsWith('http')) {
+                                      field.onChange(selection);
+                                    }
+                                  }
+                                }}
+                              >
+                                🖼️ Escolher
+                              </Button>
+                              {field.value && (
+                                <Button 
+                                  type="button" 
+                                  variant="outline" 
+                                  size="sm"
+                                  onClick={() => field.onChange('')}
+                                >
+                                  ❌
+                                </Button>
+                              )}
+                            </div>
+                            {field.value && (
+                              <div className="mt-2">
+                                <img 
+                                  src={field.value} 
+                                  alt="Preview da imagem selecionada" 
+                                  className="w-48 h-28 object-cover rounded border shadow-sm"
+                                  onError={() => alert('Erro ao carregar imagem. Verifique a URL.')}
+                                />
+                              </div>
+                            )}
+                          </div>
+                          </FormControl>
                         <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="isActive"
-                      render={({ field }) => (
-                        <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                          <div className="space-y-0.5">
-                            <FormLabel className="text-base">Ativo</FormLabel>
-                            <div className="text-sm text-muted-foreground">
-                              Exibir no site público
-                            </div>
-                          </div>
-                          <FormControl>
-                            <Switch
-                              checked={field.value}
-                              onCheckedChange={field.onChange}
-                            />
-                          </FormControl>
                         </FormItem>
                       )}
                     />
-
-                    <FormField
-                      control={form.control}
-                      name="featured"
-                      render={({ field }) => (
-                        <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                          <div className="space-y-0.5">
-                            <FormLabel className="text-base">Destaque</FormLabel>
-                            <div className="text-sm text-muted-foreground">
-                              Destacar no portfólio
-                            </div>
-                          </div>
-                          <FormControl>
-                            <Switch
-                              checked={field.value}
-                              onCheckedChange={field.onChange}
-                            />
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
-                  </div>
 
                   <div className="flex gap-3 pt-4">
                     <Button 
@@ -385,7 +438,11 @@ function AdminContent() {
                     <Button 
                       type="button" 
                       variant="outline" 
-                      onClick={() => setIsDialogOpen(false)}
+                      onClick={() => {
+                        setIsDialogOpen(false);
+                        setEditingProject(null);
+                        form.reset();
+                      }}
                     >
                       Cancelar
                     </Button>
@@ -396,17 +453,54 @@ function AdminContent() {
           </Dialog>
         </div>
 
-        {projects.length === 0 && (
-          <div className="text-center py-12">
-            <Eye className="w-12 h-12 mx-auto text-gray-400 mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">
-              Nenhum projeto encontrado
-            </h3>
-            <p className="text-gray-600 mb-4">
-              Comece criando seu primeiro projeto para exibir no portfólio.
-            </p>
+        <div className="grid gap-6">
+          {projects.map((project) => (
+            <Card key={project.id}>
+                <CardHeader>
+                <div className="flex justify-between items-start">
+                  <div>
+                    <CardTitle className="flex items-center gap-2">
+                      {project.title}
+                      <Badge variant="secondary">{project.type}</Badge>
+                    </CardTitle>
+                    <p className="text-gray-600 mt-1">{project.description}</p>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleEdit(project)}
+                    >
+                      <Edit className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleDelete(project.id)}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent>
+                {project.imageUrl && (
+                  <img 
+                    src={project.imageUrl} 
+                    alt={project.title}
+                    className="w-full h-48 object-cover rounded mb-4"
+                  />
+                )}
+                {project.embedUrl && (
+                  <div className="flex items-center gap-2 text-sm text-gray-600">
+                    <ExternalLink className="h-4 w-4" />
+                    <span>URL de Embed configurada</span>
+                  </div>
+                )}
+                </CardContent>
+              </Card>
+            ))}
           </div>
-        )}
       </div>
     </div>
   );

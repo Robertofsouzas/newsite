@@ -150,10 +150,10 @@ export default function PortfolioSection() {
 
         {/* Power BI Projects */}
         {powerBIProjects.length > 0 && (
-          <div className="mb-12">
-            <h3 className="text-2xl font-semibold text-foreground mb-8 text-center">
-              Dashboards Power BI
-            </h3>
+        <div className="mb-12">
+          <h3 className="text-2xl font-semibold text-foreground mb-8 text-center">
+            Dashboards Power BI
+          </h3>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               {powerBIProjects.map((project: Project, index: number) => (
                 <Card
@@ -169,7 +169,7 @@ export default function PortfolioSection() {
                         alt={project.title}
                         className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                       />
-                    </div>
+                  </div>
                   )}
                   <CardContent className="p-6">
                     <div className="flex items-center mb-3">
